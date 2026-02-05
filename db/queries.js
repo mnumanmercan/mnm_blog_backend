@@ -70,6 +70,13 @@ export const updatePostQuery = async (id, title, content, category_id) => {
     );
 };
 
+export const incrementPostViewCount = async (postId) => {
+    return await pool.query(
+        "UPDATE posts SET view_count = view_count + 1 WHERE id = $1 RETURNING view_count",
+        [postId]
+    );
+}
+
 // User Queries
 export const createUser = async (name, email, password) => {
   return await pool.query(

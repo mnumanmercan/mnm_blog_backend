@@ -7,12 +7,14 @@ import {
     updatePost
 } from '../controllers/postController.js';
 import { authenticateToken, isAdmin } from '../middleware/auth.js';
+import { incrementPostViewCount } from '../db/queries.js';
 
 const postRouter = express.Router();
 
 // Public routes
 postRouter.get('/posts', fetchAllPosts);
 postRouter.get('/posts/:id', fetchPostById);
+postRouter.post('/posts/:id/view', incrementPostViewCount);
 
 // Protected routes (Sadece admin)
 postRouter.post('/posts', authenticateToken, isAdmin, createPost);

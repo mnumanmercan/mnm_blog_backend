@@ -1,4 +1,4 @@
-import { getAllPosts, getPostById, createPostQuery, deletePostQuery, updatePostQuery } from '../db/queries.js';
+import { getAllPosts, getPostById, createPostQuery, deletePostQuery, updatePostQuery, incrementPostViewCount } from '../db/queries.js';
 
 export const fetchAllPosts = async (req, res) => {
     try {
@@ -153,3 +153,29 @@ export const updatePost = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+export const incrementViewCount = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id || isNaN(id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Geçersiz post ID'
+            });
+        }
+
+        const result = await incrementPostViewCount(parseInt(id));
+
+        return res.status(200).json({
+            success: true,
+            message: 'Post view count başarıyla artırıldı',
+            data: {
+                postId: parseInt(id),
+                newViewCount: result.rows[0].view_count
+            }
+        }); 
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
